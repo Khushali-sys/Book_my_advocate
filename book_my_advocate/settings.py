@@ -1,13 +1,24 @@
 import os
 from pathlib import Path
 
+# --------------------------------------------------
+# BASE DIR
+# --------------------------------------------------
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-your-secret-key-here-change-in-production'
+# --------------------------------------------------
+# SECURITY
+# --------------------------------------------------
 
-DEBUG = True
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-change-this-in-production"
+)
 
-ALLOWED_HOSTS = []
+DEBUG = False
+
+ALLOWED_HOSTS = ["*"]  # OK for Render (or use your Render domain)
 
 # --------------------------------------------------
 # APPLICATIONS
@@ -38,11 +49,12 @@ INSTALLED_APPS = [
 ]
 
 # --------------------------------------------------
-# MIDDLEWARE
+# MIDDLEWARE  ✅ FIXED (NO ELLIPSIS)
 # --------------------------------------------------
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # must be high
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,7 +68,6 @@ MIDDLEWARE = [
 # --------------------------------------------------
 
 ROOT_URLCONF = 'book_my_advocate.urls'
-
 WSGI_APPLICATION = 'book_my_advocate.wsgi.application'
 
 # --------------------------------------------------
@@ -66,7 +77,7 @@ WSGI_APPLICATION = 'book_my_advocate.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # global templates directory
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,12 +122,15 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------
-# STATIC & MEDIA FILES
+# STATIC & MEDIA (RENDER + WHITENOISE)
 # --------------------------------------------------
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+
+STATICFILES_STORAGE = (
+    "whitenoise.storage.CompressedManifestStaticFilesStorage"
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -126,11 +140,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # --------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 AUTH_USER_MODEL = 'accounts.User'
 
 # --------------------------------------------------
-# ✅ CRISPY FORMS (FIXED — BOOTSTRAP 5)
+# CRISPY FORMS
 # --------------------------------------------------
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -170,16 +183,3 @@ LOGOUT_REDIRECT_URL = 'home'
 # --------------------------------------------------
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
-DEBUG = False
-
-ALLOWED_HOSTS = ["*"]
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    ...
-]
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
