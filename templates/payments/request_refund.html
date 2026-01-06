@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Refund - Book My Advocate{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h4 class="mb-0"><i class="fas fa-undo"></i> Request Refund</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Important:</strong> 
+                        Refunds typically take 5-7 business days to process.
+                    </div>
+                    
+                    <h6 class="mb-3">Payment Details</h6>
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
+                            <p><strong>Amount:</strong> ₹{{ payment.amount }}</p>
+                            <p><strong>Payment Date:</strong> {{ payment.payment_date|date:"F d, Y" }}</p>
+                            <p class="mb-0"><strong>Booking:</strong> #{{ payment.booking.id }}</p>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Reason for Refund:</label>
+                            <textarea name="reason" id="reason" class="form-control" rows="4" required placeholder="Please explain why you're requesting a refund..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-undo"></i> Submit Refund Request
+                            </button>
+                            <a href="{% url 'payments:payment_details' payment.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

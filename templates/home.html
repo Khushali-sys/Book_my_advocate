@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+<section class="hero-section py-5 my-5">
+    <div class="container position-relative">
+        <div class="row align-items-center gy-5">
+
+            <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1200">
+                <span class="badge mb-4 d-inline-block"
+                      style="background: rgba(255,255,255,0.2); padding: 12px 24px;">
+                    <i class="fas fa-star me-2"></i>Trusted by 5000+ Clients
+                </span>
+
+                <h1 class="display-2 fw-bold mb-4 hero-title">
+                    Find Your Perfect
+                    <span class="d-block hero-highlight">Advocate</span>
+                    Today
+                </h1>
+
+                <p class="lead mb-5 hero-desc">
+                    Connect with experienced legal professionals for all your legal needs.
+                    Book consultations, court appearances, and more with ease.
+                </p>
+
+                <a href="{% url 'advocate_list' %}"
+                   class="btn btn-light btn-lg px-5 py-3 glow-on-hover">
+                    <i class="fas fa-search me-2"></i> Find Advocates
+                </a>
+            </div>
+
+            <div class="col-lg-6 text-center" data-aos="fade-left">
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800"
+                     class="img-fluid rounded-4 shadow-lg hero-img"
+                     alt="Legal Services">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="py-5 my-5">
+    <div class="container">
+
+        <div class="text-center mb-5 pb-4" data-aos="fade-up">
+            <h2 class="fw-bold display-4 text-white mb-4">
+                How It <span class="gradient-text">Works</span>
+            </h2>
+            <p class="fs-4 text-muted">
+                Get legal help in three simple and transparent steps
+            </p>
+        </div>
+
+        <div class="row g-5 mt-3">
+
+            <!-- Step 1 -->
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card step-card">
+                    <div class="step-box step-1 mb-4">1</div>
+                    <h3 class="step-title step-1-text mb-3">Search Advocates</h3>
+                    <p class="step-desc">
+                        Explore verified advocates by specialization, experience,
+                        ratings, and location to find the right match for your case.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card step-card">
+                    <div class="step-box step-2 mb-4">2</div>
+                    <h3 class="step-title step-2-text mb-3">Book Appointment</h3>
+                    <p class="step-desc">
+                        Choose your preferred date and time, share case details,
+                        and complete the secure booking process in minutes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="card step-card">
+                    <div class="step-box step-3 mb-4">3</div>
+                    <h3 class="step-title step-3-text mb-3">Get Legal Help</h3>
+                    <p class="step-desc">
+                        Attend your consultation and receive expert legal guidance
+                        from experienced and trusted advocates.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="card cta-card p-5 text-center" data-aos="zoom-in">
+            <h2 class="fw-bold display-4 mb-4">Ready to Get Started?</h2>
+            <p class="lead mb-5" style="font-size: 1.3rem;">
+                Find the perfect advocate for your legal needs today
+            </p>
+            <a href="{% url 'advocate_list' %}" class="btn btn-light btn-lg px-5 py-3">
+                Browse Advocates
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ================= STYLES ================= -->
+<style>
+/* Gradient Text */
+.gradient-text {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Hero Title */
+.hero-title {
+    color: #ffffff;
+    text-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+}
+.hero-highlight {
+    background: linear-gradient(135deg, #ffd166, #ff9f1c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero-desc {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.4rem;
+    line-height: 1.9;
+}
+
+/* Hero Image */
+.hero-img {
+    border: 7px solid rgba(255,255,255,0.3);
+    transition: transform 0.5s ease;
+}
+.hero-img:hover {
+    transform: scale(1.05);
+}
+
+/* Step Cards */
+.step-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 3.5rem 2.5rem;
+    text-align: center;
+    height: 100%;
+    border-radius: 20px;
+}
+
+/* Step Number */
+.step-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    color: #fff;
+    font-weight: 900;
+    margin: 0 auto;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+}
+
+/* Step Colors */
+.step-1 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.step-2 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.step-3 { background: linear-gradient(135deg, #fa709a, #fee140); }
+
+/* Step Titles */
+.step-title {
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+.step-1-text { color: #4facfe; }
+.step-2-text { color: #43e97b; }
+.step-3-text { color: #ffd166; }
+
+/* Step Description */
+.step-desc {
+    color: rgba(255,255,255,0.75);
+    font-size: 1.1rem;
+    line-height: 1.9;
+}
+
+/* CTA */
+.cta-card {
+    background: var(--primary-gradient);
+    color: #fff;
+    border-radius: 25px;
+}
+</style>
+
+{% endblock %}

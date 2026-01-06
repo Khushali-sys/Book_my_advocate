@@ -1,0 +1,20 @@
+# Core framework (latest feature release as of Dec 2025)
+Django==6.0
+
+# REST API framework
+djangorestframework==3.15.2
+
+# Advanced filtering for DRF
+django-filter==24.3
+
+# Clean form rendering
+django-crispy-forms==2.3
+
+# Bootstrap 5 template pack for crispy-forms (latest stable)
+crispy-bootstrap5==2025.6
+
+# Image processing (advocate photos, documents)
+Pillow==12.0.0
+
+# Date/time utilities
+python-dateutil==2.9.0.post0

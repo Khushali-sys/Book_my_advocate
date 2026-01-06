@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Write Review - Book My Advocate{% endblock %}
+
+<style>
+.review-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.review-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.3;
+}
+
+.review-header h4 {
+    position: relative;
+    z-index: 2;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 0.5px;
+}
+
+.advocate-name {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.booking-info {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.3);
+    font-size: 1.1rem;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.booking-date {
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.booking-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.card-body {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.btn-custom {
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+.btn-secondary-custom {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+}
+
+.btn-secondary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(245, 87, 108, 0.6);
+}
+
+.review-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.star-rating-preview {
+    color: #fbbf24;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+</style>
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <!-- Enhanced Header -->
+                <div class="review-header card-header p-4 position-relative">
+                    <div class="text-center">
+                        <h4 class="mb-2">
+                            <i class="fas fa-star fa-2x me-3"></i>
+                            <span>Share Your Experience</span>
+                        </h4>
+                        <div class="advocate-name">
+                            Adv. {{ booking.advocate.user.get_full_name }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Content Body -->
+                <div class="card-body p-5">
+                    <!-- Booking Details -->
+                    <div class="text-center mb-4">
+                        <div class="booking-info">
+                            <div class="booking-date">
+                                <svg class="booking-icon" viewBox="0 0 24 24">
+                                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V8h14v12zM7 10h5v5H7z"/>
+                                </svg>
+                                <span>Consultation on {{ booking.booking_date|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        
+                        <p class="review-subtitle">
+                            <i class="fas fa-quote-left text-primary me-2"></i>
+                            Your feedback helps others make better choices!
+                            <i class="fas fa-quote-right text-primary ms-2"></i>
+                        </p>
+                    </div>
+                    
+                    <!-- Form -->
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="star-rating-preview mb-4">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span class="text-muted ms-2">Rate 1-5 stars</span>
+                        </div>
+                        {{ form|crispy }}
+                        
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <button type="submit" class="btn btn-primary-custom btn-lg btn-custom">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Submit Review
+                            </button>
+                            <a href="{% url 'booking_detail' booking.id %}" class="btn btn-secondary-custom btn-lg btn-custom">
+                                <i class="fas fa-times me-2"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

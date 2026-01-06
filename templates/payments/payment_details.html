@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Details - Book My Advocate{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-receipt"></i> Payment Receipt</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Payment Status -->
+                    <div class="text-center mb-4">
+                        <span class="badge bg-{% if payment.status == 'completed' %}success{% elif payment.status == 'pending' %}warning{% elif payment.status == 'refunded' %}info{% else %}danger{% endif %} badge-custom fs-5">
+                            {{ payment.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Payment Information -->
+                    <h5 class="mb-3">Payment Information</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="40%">Transaction ID</th>
+                                <td>{{ payment.transaction_id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Amount</th>
+                                <td class="fw-bold text-success">₹{{ payment.amount }}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Method</th>
+                                <td>{{ payment.get_payment_method_display }}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Date</th>
+                                <td>{{ payment.payment_date|date:"F d, Y H:i A" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    <span class="badge bg-{% if payment.status == 'completed' %}success{% elif payment.status == 'pending' %}warning{% else %}danger{% endif %}">
+                                        {{ payment.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% if payment.refund_date %}
+                            <tr>
+                                <th>Refund Date</th>
+                                <td>{{ payment.refund_date|date:"F d, Y H:i A" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Refund Amount</th>
+                                <td class="fw-bold text-info">₹{{ payment.refund_amount }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    
+                    <!-- Booking Information -->
+                    <h5 class="mb-3">Related Booking</h5>
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <p><strong>Booking ID:</strong> #{{ payment.booking.id }}</p>
+                            <p><strong>Advocate:</strong> {{ payment.booking.advocate.user.get_full_name }}</p>
+                            <p><strong>Service:</strong> {{ payment.booking.get_service_type_display }}</p>
+                            <p><strong>Date:</strong> {{ payment.booking.booking_date }}</p>
+                            <p class="mb-0"><strong>Time:</strong> {{ payment.booking.booking_time }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <a href="{% url 'booking_detail' payment.booking.id %}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Booking
+                        </a>
+                        {% if payment.status == 'completed' and payment.booking.status not in 'completed,cancelled' %}
+                        <a href="{% url 'payments:request_refund' payment.id %}" class="btn btn-warning">
+                            <i class="fas fa-undo"></i> Request Refund
+                        </a>
+                        {% endif %}
+                        <button onclick="window.print()" class="btn btn-outline-secondary">
+                            <i class="fas fa-print"></i> Print Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

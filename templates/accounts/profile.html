@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Profile - Book My Advocate{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Reset potential interaction blockers */
+    .profile-card,
+    .card-body,
+    form,
+    button {
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 5;
+    }
+
+    .profile-wrapper {
+        background: linear-gradient(135deg, #0f1021, #1b1c3a);
+        min-height: 100vh;
+        padding: 60px 0;
+        color: #e8eaff;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        color: #e8eaff;
+        overflow: visible;
+    }
+
+    .profile-header {
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem;
+        color: white;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .profile-header h4 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    /* Form labels, help text, etc. */
+    label,
+    .form-text,
+    .help-text,
+    small,
+    .text-muted {
+        color: #d0d8ff !important;
+        font-weight: 500;
+    }
+
+    /* Input fields styling (same as login/register) */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="file"],
+    textarea,
+    select {
+        background: rgba(255, 255, 255, 0.09) !important;
+        border: 1px solid #00ffcc !important;
+        color: #00ffcc !important;
+        border-radius: 10px;
+        padding: 0.65rem 1rem;
+        transition: all 0.25s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: rgba(0, 255, 204, 0.55) !important;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #ff00ff !important;
+        box-shadow: 0 0 12px rgba(255, 0, 255, 0.4) !important;
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.14) !important;
+        outline: none;
+    }
+
+    /* File input special handling */
+    input[type="file"] {
+        color: #00ffcc !important;
+        padding: 0.4rem;
+    }
+
+    /* Submit button - matches login/register */
+    .btn-gradient {
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        cursor: pointer !important;
+        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+        z-index: 10;
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(106, 17, 203, 0.5);
+        color: white;
+    }
+
+    .btn-gradient:active {
+        transform: translateY(1px);
+        box-shadow: 0 3px 10px rgba(106, 17, 203, 0.4);
+    }
+
+    /* Debug pulsing (remove after confirming clicks work) */
+    .btn-gradient.test-flash {
+        animation: flash 1.8s infinite;
+    }
+    @keyframes flash {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0.45; }
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <div class="card profile-card shadow-lg">
+                    
+                    <div class="profile-header">
+                        <h4><i class="fas fa-user-edit me-2"></i> My Profile</h4>
+                    </div>
+
+                    <div class="card-body p-5">
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mb-4">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        {% if form.errors %}
+                            <div class="alert alert-warning mb-4 small">
+                                Please correct the errors below.
+                            </div>
+                        {% endif %}
+
+                        <form method="post" enctype="multipart/form-data" action="" novalidate>
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                {{ form|crispy }}
+                            </div>
+
+                            <button type="submit" class="btn btn-gradient w-100 btn-lg test-flash">
+                                <i class="fas fa-save me-2"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Optional quick link back to dashboard -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'dashboard' %}" class="text-info fw-bold text-decoration-none">
+                        ← Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove after testing clickability -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.querySelector('.btn-gradient');
+        if (btn) {
+            console.log('Save Changes button found');
+            btn.addEventListener('click', () => {
+                console.log('Save Changes clicked');
+            });
+        }
+    });
+</script>
+
+{% endblock %}

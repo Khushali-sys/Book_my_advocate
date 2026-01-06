@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Book My Advocate{% endblock %}
+
+{% block content %}
+<style>
+    /* Dashboard background */
+    .dashboard-wrapper {
+        background: linear-gradient(135deg, #0f1021, #1b1c3a);
+        min-height: 100vh;
+        padding: 40px 0;
+        color: #ffffff;
+    }
+
+    /* Cards - Enhanced with glow */
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(77, 163, 255, 0.1);
+        color: #ffffff;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(77, 163, 255, 0.2);
+    }
+
+    /* HEADINGS - Bright cyan with glow */
+    .dashboard-card h5,
+    .dashboard-card h2,
+    h2 {
+        color: #00ffcc !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 15px rgba(0, 255, 204, 0.6), 0 0 30px rgba(0, 255, 204, 0.3) !important;
+    }
+
+    /* Main dashboard title */
+    h2 {
+        background: linear-gradient(45deg, #00ffcc, #4da3ff, #ff00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+    }
+
+    /* Muted text - Light cyan/teal (much more visible than gray) */
+    .text-muted,
+    p.text-muted {
+        color: #a0f0e8 !important;
+        text-shadow: 0 0 8px rgba(160, 240, 232, 0.3) !important;
+    }
+
+    /* TABLE TEXT - All white/cyan for maximum visibility */
+    .table {
+        color: #e0f7ff !important;
+    }
+
+    .table thead th {
+        color: #4da3ff !important;
+        font-weight: 600 !important;
+        text-shadow: 0 0 10px rgba(77, 163, 255, 0.5) !important;
+        border-bottom: 1px solid rgba(77, 163, 255, 0.3) !important;
+    }
+
+    .table td {
+        color: #ffffff !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 255, 204, 0.1) !important;
+        box-shadow: inset 0 0 20px rgba(0, 255, 204, 0.1);
+    }
+
+    /* Profile avatar */
+    .profile-placeholder {
+        background: linear-gradient(135deg, #6a5acd, #8a2be2, #ff00ff);
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+    }
+
+    /* Stats cards - Enhanced gradients + text glow */
+    .stat-primary {
+        background: linear-gradient(135deg, #4facfe, #00f2fe, #00ffcc);
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+    }
+
+    .stat-success {
+        background: linear-gradient(135deg, #43e97b, #38f9d7, #00ff88);
+        box-shadow: 0 0 25px rgba(56, 249, 215, 0.4);
+    }
+
+    .stat-warning {
+        background: linear-gradient(135deg, #f7971e, #ffd200, #ffaa00);
+        box-shadow: 0 0 25px rgba(255, 210, 0, 0.5);
+        color: #1a0d00 !important; /* Dark text for yellow bg */
+    }
+
+    .stat-primary h3, .stat-success h3 {
+        color: #ffffff !important;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    }
+
+    .stat-warning h3 {
+        color: #1a0d00 !important;
+        text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-primary p, .stat-success p {
+        color: rgba(255, 255, 255, 0.95) !important;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Buttons - Enhanced with glow */
+    .btn-primary {
+        background: linear-gradient(135deg, #6a5acd, #8a2be2, #ff00ff);
+        border: 1px solid rgba(255, 0, 255, 0.3);
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(138, 43, 226, 0.6), 0 0 20px rgba(255, 0, 255, 0.4);
+        color: #ffffff !important;
+    }
+
+    .btn-outline-primary {
+        color: #00ffcc !important;
+        border-color: #00ffcc !important;
+        background: rgba(0, 255, 204, 0.1);
+        text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #00ffcc, #4da3ff) !important;
+        color: #ffffff !important;
+        box-shadow: 0 5px 20px rgba(0, 255, 204, 0.4);
+    }
+
+    /* Badges - Neon glow effect */
+    .badge {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-shadow: 0 0 8px rgba(0,0,0,0.8);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #00ff88, #38f9d7) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.6) !important;
+        color: #000 !important;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #ffd200, #ffaa00) !important;
+        box-shadow: 0 0 15px rgba(255, 210, 0, 0.6) !important;
+        color: #000 !important;
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, #4da3ff, #00f2fe) !important;
+        box-shadow: 0 0 15px rgba(77, 163, 255, 0.6) !important;
+        color: #fff !important;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #ff416c, #ff4b2b) !important;
+        box-shadow: 0 0 15px rgba(255, 65, 108, 0.6) !important;
+        color: #fff !important;
+    }
+
+    /* No bookings text */
+    .no-bookings {
+        color: #a0f0e8 !important;
+        text-shadow: 0 0 12px rgba(160, 240, 232, 0.4);
+        font-size: 1.1rem;
+    }
+
+    /* Ensure icons are visible */
+    .fas {
+        text-shadow: 0 0 10px currentColor;
+    }
+</style>
+
+<div class="dashboard-wrapper">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center p-4">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle mb-3 shadow-lg" width="110" height="110" style="border: 3px solid rgba(0, 255, 204, 0.5); box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);">
+                        {% else %}
+                            <div class="profile-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center shadow-lg" style="width: 110px; height: 110px;">
+                                <i class="fas fa-user fa-3x text-white"></i>
+                            </div>
+                        {% endif %}
+                        <h5 class="fw-bold mb-2">{{ user.get_full_name|default:user.username }}</h5>
+                        <p class="text-muted mb-3">{{ user.get_user_type_display|default:"User" }}</p>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm px-4">
+                            <i class="fas fa-edit me-1"></i> Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <h2 class="mb-5 fw-bold">
+                    <i class="fas fa-dashboard me-2"></i> Dashboard
+                </h2>
+
+                <!-- Stats -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="card dashboard-card stat-primary text-white h-100">
+                            <div class="card-body text-center p-4">
+                                <h3 class="fw-bold display-4 mb-1">{{ bookings.count|default:0 }}</h3>
+                                <p class="mb-0 fs-5">Total Bookings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card dashboard-card stat-success text-white h-100">
+                            <div class="card-body text-center p-4">
+                                <h3 class="fw-bold display-4 mb-1">{{ bookings|length|default:0 }}</h3>
+                                <p class="mb-0 fs-5">Active Bookings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card dashboard-card stat-warning h-100">
+                            <div class="card-body text-center p-4">
+                                <h3 class="fw-bold display-4 mb-1">0</h3>
+                                <p class="mb-0 fs-5">Pending Reviews</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="card dashboard-card">
+                    <div class="card-header bg-transparent border-0 pb-0">
+                        <h5 class="mb-3">
+                            <i class="fas fa-calendar me-2 text-success"></i> Recent Bookings
+                        </h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        {% if bookings %}
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>
+                                                {% if user.user_type == 'client' %}
+                                                    <i class="fas fa-gavel me-1"></i>Advocate
+                                                {% else %}
+                                                    <i class="fas fa-user-friends me-1"></i>Client
+                                                {% endif %}
+                                            </th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in bookings %}
+                                        <tr>
+                                            <td><strong>#{{ booking.id }}</strong></td>
+                                            <td>
+                                                {% if user.user_type == 'client' %}
+                                                    <strong>{{ booking.advocate.user.get_full_name|default:booking.advocate.user.username }}</strong>
+                                                {% else %}
+                                                    <strong>{{ booking.client.get_full_name|default:booking.client.username }}</strong>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ booking.booking_date|date:"M d, Y" }}</td>
+                                            <td>
+                                                <span class="badge">
+                                                    {{ booking.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'booking_detail' booking.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye me-1"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-calendar-times fa-4x text-muted mb-4"></i>
+                                <p class="no-bookings mb-0">No bookings yet</p>
+                                <p class="text-muted small">Your bookings will appear here once you start booking advocates</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Cancel Booking - Book My Advocate{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Reset interaction blockers */
+    .cancel-card,
+    .card-body,
+    form,
+    button,
+    textarea {
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 5;
+    }
+
+    /* Page wrapper */
+    .cancel-wrapper {
+        background: linear-gradient(135deg, #0f1021, #1b1c3a);
+        min-height: 100vh;
+        padding: 60px 0;
+        color: #e8eaff;
+    }
+
+    .cancel-card {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        color: #e0e8ff;
+        overflow: visible;
+    }
+
+    /* Danger header */
+    .cancel-header {
+        background: linear-gradient(90deg, #dc3545, #ff6b7a);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem;
+        color: white;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .cancel-header h4 {
+        margin: 0;
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+
+    /* Form elements */
+    label,
+    .form-label,
+    .form-text,
+    .help-text,
+    strong {
+        color: #d0d8ff !important;
+        font-weight: 600;
+    }
+
+    .text-muted {
+        color: #b0c4ff !important;
+    }
+
+    /* Textarea styling (matches profile/login) */
+    textarea[name="reason"] {
+        background: rgba(255, 255, 255, 0.09) !important;
+        border: 2px solid #ff6b7a !important; /* Red border for cancel theme */
+        color: #ffcccb !important;
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 1rem;
+        resize: vertical;
+        min-height: 120px;
+        transition: all 0.25s ease;
+    }
+
+    textarea[name="reason"]::placeholder {
+        color: rgba(255, 204, 203, 0.6) !important;
+    }
+
+    textarea[name="reason"]:focus {
+        border-color: #ff4757 !important;
+        box-shadow: 0 0 15px rgba(255, 71, 87, 0.5) !important;
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.14) !important;
+        outline: none;
+    }
+
+    /* Booking details alert */
+    .booking-details {
+        background: rgba(255, 193, 7, 0.15) !important;
+        border: 1px solid rgba(255, 193, 7, 0.3) !important;
+        color: #ffeaa7 !important;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    /* Buttons */
+    .btn-danger-gradient {
+        background: linear-gradient(90deg, #dc3545 0%, #ff6b7a 100%) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600;
+        padding: 0.85rem 1.75rem;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        cursor: pointer !important;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        z-index: 10;
+    }
+
+    .btn-danger-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.6);
+        color: white !important;
+    }
+
+    .btn-danger-gradient:active {
+        transform: translateY(1px);
+        box-shadow: 0 3px 12px rgba(220, 53, 69, 0.5);
+    }
+
+    .btn-secondary-gradient {
+        background: linear-gradient(90deg, #6c757d 0%, #9aa0a6 100%) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600;
+        padding: 0.85rem 1.75rem;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        cursor: pointer !important;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+    }
+
+    .btn-secondary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.6);
+        color: white !important;
+        background: linear-gradient(90deg, #5a6268 0%, #8d969f 100%) !important;
+    }
+
+    /* Debug pulsing */
+    .test-flash {
+        animation: flash 1.8s infinite;
+    }
+    @keyframes flash {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0.45; }
+    }
+
+    /* Warning icon glow */
+    .warning-glow {
+        text-shadow: 0 0 12px rgba(255, 193, 7, 0.6);
+    }
+</style>
+
+<div class="cancel-wrapper">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card cancel-card shadow-lg">
+                    
+                    <div class="cancel-header text-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2 warning-glow"></i>
+                            Confirm Cancellation
+                        </h4>
+                    </div>
+
+                    <div class="card-body p-5">
+                        <p class="text-center mb-4 fs-5" style="color: #ffd93d;">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Are you sure you want to cancel this booking?
+                        </p>
+
+                        <!-- Booking Details -->
+                        <div class="booking-details mb-4">
+                            <strong class="d-block mb-3">
+                                <i class="fas fa-info-circle me-2"></i> Booking Details:
+                            </strong>
+                            <div class="row text-center text-md-start">
+                                <div class="col-md-4 mb-2">
+                                    <strong>Advocate:</strong><br>
+                                    <span class="fw-medium">{{ booking.advocate.user.get_full_name }}</span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <strong>Date:</strong><br>
+                                    {{ booking.booking_date|date:"F d, Y" }}
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <strong>Time:</strong><br>
+                                    {{ booking.booking_time }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="post" action="" novalidate>
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger mb-4">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
+
+                            <div class="mb-5">
+                                <label for="reason" class="form-label mb-3 d-block">
+                                    <i class="fas fa-edit me-2"></i> Reason for Cancellation <span class="text-danger">*</span>
+                                </label>
+                                <textarea 
+                                    name="reason" 
+                                    id="reason" 
+                                    class="form-control w-100" 
+                                    rows="5" 
+                                    placeholder="Please explain why you're cancelling (e.g., schedule change, found another advocate, etc.)"
+                                    required
+                                ></textarea>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle me-1"></i> 
+                                    This helps us improve our service and informs the advocate.
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-danger-gradient btn-lg test-flash">
+                                    <i class="fas fa-times-circle me-2"></i> Yes, Cancel Booking
+                                </button>
+                                
+                                <a href="{% url 'booking_detail' booking.id %}" class="btn btn-secondary-gradient btn-lg test-flash">
+                                    <i class="fas fa-arrow-left me-2"></i> Go Back to Booking
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Debug helper – remove after testing -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.test-flash').forEach(btn => {
+            console.log('Button found:', btn.textContent.trim());
+            btn.addEventListener('click', () => {
+                console.log('Cancel button clicked:', btn.textContent.trim());
+            });
+        });
+
+        // Auto-grow textarea
+        const textarea = document.getElementById('reason');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        }
+    });
+</script>
+
+{% endblock %}

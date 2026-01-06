@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Advocates - Book My Advocate{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Page Header -->
+    <div class="text-center mb-5" data-aos="fade-down">
+        <h1 class="display-4 fw-bold mb-3">
+            Find Your Perfect
+            <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Advocate
+            </span>
+        </h1>
+        <p class="lead text-muted">Browse through our verified legal professionals</p>
+    </div>
+
+    <!-- Advanced Search and Filter -->
+    <div class="card mb-5 shadow-lg" data-aos="fade-up">
+        <div class="card-body p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 25px;">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-search me-2"></i>Search
+                    </label>
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Name or expertise..."
+                           value="{{ request.GET.search }}"
+                           style="border-radius: 15px;">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-certificate me-2"></i>Specialization
+                    </label>
+                    <select name="specialization" class="form-select" style="border-radius: 15px;">
+                        <option value="">All Specializations</option>
+                        {% for spec in specializations %}
+                            <option value="{{ spec.id }}"
+                                {% if request.GET.specialization == spec.id|stringformat:"s" %}selected{% endif %}>
+                                {{ spec.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-briefcase me-2"></i>Experience
+                    </label>
+                    <select name="experience" class="form-select" style="border-radius: 15px;">
+                        <option value="">All Experience</option>
+                        <option value="0-2" {% if request.GET.experience == '0-2' %}selected{% endif %}>0–2 years</option>
+                        <option value="3-5" {% if request.GET.experience == '3-5' %}selected{% endif %}>3–5 years</option>
+                        <option value="6-10" {% if request.GET.experience == '6-10' %}selected{% endif %}>6–10 years</option>
+                        <option value="10+" {% if request.GET.experience == '10+' %}selected{% endif %}>10+ years</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-star me-2"></i>Min Rating
+                    </label>
+                    <select name="min_rating" class="form-select" style="border-radius: 15px;">
+                        <option value="">All Ratings</option>
+                        <option value="4" {% if request.GET.min_rating == '4' %}selected{% endif %}>4+ Stars</option>
+                        <option value="3" {% if request.GET.min_rating == '3' %}selected{% endif %}>3+ Stars</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-light w-100" style="border-radius: 15px; font-weight: 600;">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mb-4" data-aos="fade-up">
+        <h5 class="text-muted">
+            <i class="fas fa-filter me-2"></i>
+            Showing <strong>{{ advocates.count }}</strong>
+            advocate{{ advocates.count|pluralize }}
+        </h5>
+    </div>
+
+    <!-- Advocates Grid -->
+    <div class="row g-4">
+        {% for advocate in advocates %}
+        <div class="col-md-6 col-lg-4"
+             data-aos="fade-up"
+             data-aos-delay="{% widthratio forloop.counter 1 50 %}">
+            <div class="card h-100 glow-on-hover">
+
+                <!-- Card Header -->
+                <div class="card-header text-white text-center"
+                     style="background: var(--primary-gradient); border-radius: 25px 25px 0 0; padding: 20px;">
+                    {% if advocate.verified %}
+                    <span class="badge bg-success position-absolute top-0 end-0 m-3">
+                        <i class="fas fa-check-circle me-1"></i> Verified
+                    </span>
+                    {% endif %}
+
+                    <!-- Profile Picture -->
+                    <div class="mb-3">
+                        {% if advocate.user.profile_picture %}
+                            <img src="{{ advocate.user.profile_picture.url }}"
+                                 alt="{{ advocate.user.get_full_name }}"
+                                 class="rounded-circle border border-4 border-white"
+                                 width="120" height="120"
+                                 style="object-fit: cover;">
+                        {% else %}
+                            <div class="bg-white rounded-circle mx-auto d-flex align-items-center justify-content-center border border-4 border-white"
+                                 style="width: 120px; height: 120px;">
+                                <i class="fas fa-user fa-3x text-primary"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <h5 class="fw-bold mb-0">
+                        Adv. {{ advocate.user.get_full_name }}
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <!-- Rating -->
+                    <div class="text-center mb-3">
+                        <div class="rating-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= advocate.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">
+                            {{ advocate.rating }} ({{ advocate.total_reviews }} reviews)
+                        </small>
+                    </div>
+
+                    <!-- Specializations -->
+                    <div class="mb-3 text-center">
+                        {% for spec in advocate.specializations.all|slice:":3" %}
+                            <span class="badge"
+                                  style="background: var(--primary-gradient); margin: 2px;">
+                                {{ spec.name }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="mb-2">
+                        <i class="fas fa-briefcase text-primary me-2"></i>
+                        {{ advocate.get_experience_display }}
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-gavel text-success me-2"></i>
+                        {{ advocate.total_cases }} cases
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-chart-line text-warning me-2"></i>
+                        {{ advocate.success_rate }}% success rate
+                    </div>
+
+                    <hr>
+
+                    <!-- Pricing -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <small class="text-muted">Consultation</small>
+                            <h5 class="mb-0 text-success fw-bold">
+                                ₹{{ advocate.consultation_fee }}
+                            </h5>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">Court</small>
+                            <h5 class="mb-0 text-primary fw-bold">
+                                ₹{{ advocate.court_appearance_fee }}
+                            </h5>
+                        </div>
+                    </div>
+
+                    <p class="text-muted small">
+                        {{ advocate.bio|truncatewords:20 }}
+                    </p>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-white border-top-0"
+                     style="border-radius: 0 0 25px 25px;">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'advocate_detail' advocate.id %}"
+                           class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-2"></i> View Full Profile
+                        </a>
+
+                        {% if user.is_authenticated and user.user_type == 'client' %}
+                        <a href="{% url 'create_booking' advocate.id %}"
+                           class="btn btn-primary">
+                            <i class="fas fa-calendar-plus me-2"></i> Book Now
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card text-center p-5" data-aos="fade-up">
+                <div class="card-body">
+                    <i class="fas fa-search fa-5x text-muted mb-4" style="opacity: 0.3;"></i>
+                    <h3 class="fw-bold mb-3">No Advocates Found</h3>
+                    <p class="text-muted mb-4">
+                        We couldn't find any advocates matching your criteria.
+                    </p>
+                    <a href="{% url 'advocate_list' %}" class="btn btn-primary">
+                        <i class="fas fa-redo me-2"></i> Clear Filters
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

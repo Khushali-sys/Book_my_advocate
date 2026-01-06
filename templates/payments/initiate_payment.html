@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment - Book My Advocate{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-credit-card"></i> Complete Your Payment</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Booking Summary -->
+                    <h5 class="mb-3">Booking Summary</h5>
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Advocate:</strong></p>
+                                    <p>{{ booking.advocate.user.get_full_name }}</p>
+                                    
+                                    <p class="mb-2"><strong>Service:</strong></p>
+                                    <p>{{ booking.get_service_type_display }}</p>
+                                    
+                                    <p class="mb-2"><strong>Date & Time:</strong></p>
+                                    <p>{{ booking.booking_date }} at {{ booking.booking_time }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Duration:</strong></p>
+                                    <p>{{ booking.duration }} minutes</p>
+                                    
+                                    <p class="mb-2"><strong>Case Type:</strong></p>
+                                    <p>{{ booking.case_type }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Total Amount:</h5>
+                                <h3 class="text-success mb-0">₹{{ booking.total_fee }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method Selection -->
+                    <h5 class="mb-3">Select Payment Method</h5>
+                    <form method="post" action="{% url 'payments:process_payment' booking.id %}">
+                        {% csrf_token %}
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check" name="payment_method" id="card" value="card" checked>
+                                <label class="btn btn-outline-primary w-100 p-3" for="card">
+                                    <i class="fas fa-credit-card fa-2x d-block mb-2"></i>
+                                    Credit/Debit Card
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check" name="payment_method" id="upi" value="upi">
+                                <label class="btn btn-outline-primary w-100 p-3" for="upi">
+                                    <i class="fas fa-mobile-alt fa-2x d-block mb-2"></i>
+                                    UPI
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check" name="payment_method" id="netbanking" value="netbanking">
+                                <label class="btn btn-outline-primary w-100 p-3" for="netbanking">
+                                    <i class="fas fa-university fa-2x d-block mb-2"></i>
+                                    Net Banking
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check" name="payment_method" id="wallet" value="wallet">
+                                <label class="btn btn-outline-primary w-100 p-3" for="wallet">
+                                    <i class="fas fa-wallet fa-2x d-block mb-2"></i>
+                                    Wallet
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-shield-alt"></i> <strong>Secure Payment:</strong> Your payment information is encrypted and secure.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-lock"></i> Pay ₹{{ booking.total_fee }}
+                            </button>
+                            <a href="{% url 'booking_detail' booking.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Booking
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

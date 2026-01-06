@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Book Appointment - Book My Advocate{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Reset interaction blockers */
+    .booking-form-card,
+    .advocate-card,
+    .card-body,
+    form,
+    button,
+    input,
+    select,
+    textarea {
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 5;
+    }
+
+    /* Page wrapper */
+    .appointment-wrapper {
+        background: linear-gradient(135deg, #0f1021, #1b1c3a);
+        min-height: 100vh;
+        padding: 60px 0;
+        color: #e8eaff;
+    }
+
+    /* Advocate sidebar card (sticky) */
+    .advocate-card {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        color: #e0e8ff;
+    }
+
+    .advocate-header {
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem;
+        color: white;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Main form card */
+    .booking-form-card {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        color: #e0e8ff;
+    }
+
+    .form-header {
+        background: linear-gradient(90deg, #2575fc, #6a11cb);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem;
+        color: white;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Text visibility */
+    h4, h5, h6, strong {
+        color: #ffffff;
+        text-shadow: 0 0 8px rgba(100, 165, 255, 0.35);
+    }
+
+    .text-muted, small, .form-text {
+        color: #b0c4ff !important;
+    }
+
+    /* Form inputs (same style as login/register/profile) */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+        background: rgba(255, 255, 255, 0.09) !important;
+        border: 1px solid #00ffcc !important;
+        color: #00ffcc !important;
+        border-radius: 10px;
+        padding: 0.65rem 1rem;
+        transition: all 0.25s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: rgba(0, 255, 204, 0.55) !important;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #ff00ff !important;
+        box-shadow: 0 0 12px rgba(255, 0, 255, 0.4) !important;
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.14) !important;
+        outline: none;
+    }
+
+    /* Fee info box */
+    .fee-info {
+        background: rgba(40, 167, 69, 0.15);
+        border: 1px solid rgba(40, 167, 69, 0.3);
+        border-radius: 12px;
+        padding: 1.25rem;
+        color: #d0ffd0;
+    }
+
+    /* Buttons */
+    .btn-gradient {
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.85rem 1.75rem;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        cursor: pointer !important;
+        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4);
+        z-index: 10;
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(106, 17, 203, 0.6);
+    }
+
+    .btn-secondary-gradient {
+        background: linear-gradient(90deg, #6c757d 0%, #9aa0a6 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.85rem 1.75rem;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+    }
+
+    .btn-secondary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.6);
+        background: linear-gradient(90deg, #5a6268 0%, #8d969f 100%);
+    }
+
+    /* Debug pulsing */
+    .test-flash {
+        animation: flash 1.8s infinite;
+    }
+    @keyframes flash {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0.45; }
+    }
+
+    /* Sticky positioning safety */
+    .sticky-top {
+        top: 80px !important;
+        z-index: 1000;
+    }
+</style>
+
+<div class="appointment-wrapper">
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Advocate Info (Sticky) -->
+            <div class="col-lg-4">
+                <div class="card advocate-card shadow-lg sticky-top" style="top: 100px;">
+                    <div class="advocate-header text-center">
+                        <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i> Booking With</h5>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        {% if advocate.user.profile_picture %}
+                            <img src="{{ advocate.user.profile_picture.url }}" alt="{{ advocate.user.get_full_name }}" class="rounded-circle mb-3 shadow" width="110" height="110" style="object-fit: cover; border: 3px solid #00ffcc;">
+                        {% else %}
+                            <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center shadow" style="width: 110px; height: 110px; background: linear-gradient(135deg, #6a5acd, #8a2be2);">
+                                <i class="fas fa-user fa-3x text-white"></i>
+                            </div>
+                        {% endif %}
+                        <h5 class="fw-bold mb-2">Adv. {{ advocate.user.get_full_name }}</h5>
+                        
+                        <div class="rating-stars mb-3" style="color: #ffc107; font-size: 1.3rem;">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= advocate.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <p class="text-muted mb-1">{{ advocate.get_experience_display }}</p>
+                        <small class="text-muted">Available for consultation</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Form -->
+            <div class="col-lg-8">
+                <div class="card booking-form-card shadow-lg">
+                    <div class="form-header">
+                        <h4 class="mb-0"><i class="fas fa-calendar-plus me-2"></i> Book Appointment</h4>
+                    </div>
+
+                    <div class="card-body p-5">
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mb-4">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        {% if form.errors %}
+                            <div class="alert alert-warning mb-4 small">
+                                Please correct the errors below.
+                            </div>
+                        {% endif %}
+
+                        <form method="post" action="" novalidate>
+                            {% csrf_token %}
+                            <div class="mb-5">
+                                {{ form|crispy }}
+                            </div>
+
+                            <!-- Fee Information -->
+                            <div class="fee-info mb-5">
+                                <h6 class="alert-heading mb-3">
+                                    <i class="fas fa-rupee-sign me-2"></i> Fee Information
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <strong>Consultation:</strong><br>
+                                        <span class="fs-4 fw-bold text-success">₹{{ advocate.consultation_fee }}</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Court Appearance:</strong><br>
+                                        <span class="fs-4 fw-bold text-success">₹{{ advocate.court_appearance_fee }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-3 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-gradient btn-lg test-flash">
+                                    <i class="fas fa-check-circle me-2"></i> Proceed to Payment
+                                </button>
+                                
+                                <a href="{% url 'advocate_detail' advocate.id %}" class="btn btn-secondary-gradient btn-lg test-flash">
+                                    <i class="fas fa-times me-2"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Debug helper – remove after confirming clicks work -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.test-flash').forEach(btn => {
+            console.log('Button found:', btn.textContent.trim());
+            btn.addEventListener('click', () => {
+                console.log('Clicked:', btn.textContent.trim());
+            });
+        });
+    });
+</script>
+
+{% endblock %}
